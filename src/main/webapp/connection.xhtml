@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+<h:head>
+    <title>Apache phoenix Viewer</title>
+</h:head>
+<h:body>
+    <h:form>
+        <p:growl id="growl" showDetail="true" />
+
+        <p:card style="width: 35rem; margin-bottom: 2em; margin: 0 auto;">
+            <f:facet name="title">
+                Apache phoenix Connection
+            </f:facet>
+
+            <h5>JDBC URL</h5>
+            <span class="ui-float-label"><p:inputText value="#{connectionBean.url}"/></span>
+
+            <h5 class="mt-0">phoenix.schema.mapSystemTablesToNamespace</h5>
+            <span class="ui-float-label"><p:selectBooleanCheckbox value="#{connectionBean.mapSystemTablesToNamespace}"/></span>
+
+            <h5 class="mt-0">phoenix.schema.isNamespaceMappingEnabled</h5>
+            <span class="ui-float-label"><p:selectBooleanCheckbox value="#{connectionBean.isNamespaceMappingEnabled}"/></span>
+
+            <f:facet name="footer">
+                <p:commandButton value="Connect..." action="#{connectionBean.tryToConnect()}" update="growl" />
+            </f:facet>
+        </p:card>
+
+
+    </h:form>
+</h:body>
+</html>

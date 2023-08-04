@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<h:head>
+    <title>Apache phoenix Viewer</title>
+</h:head>
+<h:body>
+    <h2>Apache phoenix Viewer</h2>
+
+    <h5>Available scemas:</h5>
+    <h:form>
+        <ui:repeat value="#{serverBean.schemas()}" var="schema">
+            <p:commandButton value="#{schema.viewName}" action="#{serverBean.selectSchema(schema)}" update="tableList"
+                             style="margin: 1vw"/>
+        </ui:repeat>
+    </h:form>
+
+    <h5>Available tables:</h5>
+    <p:panel id="tableList" class="col-12 md:col-6 lg:col-4 xl:col-3" header="#{serverBean.selectedSchema.name}">
+
+        <ui:repeat value="#{serverBean.tables()}" var="table">
+            <p:commandButton value="#{table.name}" action="#{serverBean.selectTable(table)}" update="sqlForm"
+                             styleClass="ui-button-secondary" style="margin: 1vw"/>
+        </ui:repeat>
+    </p:panel>
+
+    <h:form id="sqlForm">
+        <p:growl id="growl" showDetail="true" />
+
+        <h5>SQL:</h5>
+        <p:inputTextarea value="#{serverBean.sql}" rows="10" cols="80"/>
+        <br/>
+        <p:commandButton value="Execute" action="#{serverBean.executeSql()}" update="sqlForm"
+                         style="margin: 1vw" styleClass="ui-button-danger"/>
+
+        <div class="ui-datatable-tablewrapper">
+            <table class=".ui-datatable .ui-widget" width="100%">
+                <thead>
+                <tr>
+                    <ui:repeat value="#{serverBean.getTableColumns()}" var="tableColumn">
+                        <th style="border: 1px solid gray;">#{tableColumn}</th>
+                    </ui:repeat>
+                </tr>
+                </thead>
+
+                <ui:repeat value="#{serverBean.getSqlResult()}" var="row">
+                    <tr>
+                        <ui:repeat value="#{serverBean.getTableColumns()}" var="tableColumn">
+                            <td style="border: 1px dotted gray;">#{row.get(tableColumn)}</td>
+                        </ui:repeat>
+                    </tr>
+                </ui:repeat>
+            </table>
+        </div>
+    </h:form>
+
+</h:body>
+</html>
