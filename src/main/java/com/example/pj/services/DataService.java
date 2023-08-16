@@ -32,6 +32,9 @@ public class DataService {
     public Connection getConnection() {
         FacesContext context = FacesContext.getCurrentInstance();
         HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
+        if (null == session)
+            return null;
+
         return getConnection(session.getId());
     }
 

@@ -4,24 +4,49 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
 
 <h:head>
     <title>Apache phoenix Viewer</title>
 </h:head>
 <h:body>
-    <h2>Apache phoenix Viewer</h2>
-
-    <h5>Available scemas:</h5>
     <h:form>
-        <ui:repeat value="#{serverBean.schemas()}" var="schema">
-            <p:commandButton value="#{schema.viewName}" action="#{serverBean.selectSchema(schema)}" update="tableList"
-                             style="margin: 1vw"/>
-        </ui:repeat>
+        <c:choose>
+            <c:when test="#{serverBean.hasConnection()}">
+                <p>Connection OK</p>
+                <p:commandButton ajax="false"
+                                 value="Change connection"
+                                 actionListener="#{serverBean.redirectToConnection()}"/>
+            </c:when>
+            <c:otherwise>
+
+                <p>Connection is lost</p>
+                <p:commandButton ajax="false"
+                                 value="Try to connect"
+                                 actionListener="#{serverBean.redirectToConnection()}"/>
+
+            </c:otherwise>
+        </c:choose>
     </h:form>
 
-    <h5>Available tables:</h5>
-    <p:panel id="tableList" class="col-12 md:col-6 lg:col-4 xl:col-3" header="#{serverBean.selectedSchema.name}">
+    <h2>Apache phoenix Viewer</h2>
+
+    <h:form>
+        <p:panel id="schemaList" class="col-12 md:col-6 lg:col-4 xl:col-3" header="Available scemas">
+            <ui:repeat value="#{serverBean.schemas()}" var="schema">
+                <p:commandButton value="#{schema.viewName}" action="#{serverBean.selectSchema(schema)}"
+                                 update="tableList"
+                                 style="margin: 1vw"/>
+            </ui:repeat>
+        </p:panel>
+
+    </h:form>
+
+    <br/>
+
+    <p:panel id="tableList" class="col-12 md:col-6 lg:col-4 xl:col-3"
+             header="Available tables of shema #{serverBean.selectedSchema.name}">
 
         <ui:repeat value="#{serverBean.tables()}" var="table">
             <p:commandButton value="#{table.name}" action="#{serverBean.selectTable(table)}" update="sqlForm"
@@ -30,7 +55,7 @@
     </p:panel>
 
     <h:form id="sqlForm">
-        <p:growl id="growl" showDetail="true" />
+        <p:growl id="growl" showDetail="true"/>
 
         <h5>SQL:</h5>
         <p:inputTextarea value="#{serverBean.sql}" rows="10" cols="80"/>

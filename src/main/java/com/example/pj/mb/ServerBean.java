@@ -13,6 +13,7 @@ import lombok.Setter;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.sql.*;
 import java.util.*;
@@ -59,6 +60,14 @@ public class ServerBean implements Serializable {
     private List<Map<String, Object>> sqlResult = new ArrayList<>();
 
     // *****************************************************************************************************************
+    public boolean hasConnection() {
+        return null != dataService.getConnection();
+    }
+
+    public void redirectToConnection() throws IOException {
+        FacesContext.getCurrentInstance().getExternalContext().redirect("connection.xhtml");
+    }
+
     public void selectSchema(final Schema schema) {
         selectedSchema = schema;
     }
@@ -73,6 +82,8 @@ public class ServerBean implements Serializable {
         }
 
         buffer.append(selectedTable.getName());
+
+        buffer.append(" LIMIT 10");
 
         sql = buffer.toString();
     }
@@ -100,7 +111,9 @@ public class ServerBean implements Serializable {
         }
 
         List<Schema> schemas = new ArrayList<>();
-        Map<String, List<TableField>> schemaFields = tableFields.stream().collect(groupingByWithNullKeys(TableField::getSchema));
+        Map<String, List<TableField>> schemaFields = tableFields.stream()
+                .filter(tableField -> !StringUtils.isEmpty(tableField.getTable().trim()))
+                .collect(groupingByWithNullKeys(TableField::getSchema));
         for (Map.Entry<String, List<TableField>> schemaEntry : schemaFields.entrySet()) {
             Map<String, List<TableField>> tableMap = schemaEntry.getValue().stream().collect(Collectors.groupingBy(TableField::getTable));
 
