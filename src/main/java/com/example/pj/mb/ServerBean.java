@@ -150,6 +150,35 @@ public class ServerBean implements Serializable {
     }
 
     public void executeSql() {
+        Connection connection = dataService.getConnection();
+        if (null == connection) {
+            FacesContext.getCurrentInstance().
+                    addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Connection Error", "No connection, need reconnect"));
+            return;
+        }
+
+
+        try (Statement statement = connection.createStatement()) {
+            int rowCount = 0;
+            for (String sqlPart : sql.split(";")) {
+                sqlPart = sqlPart.trim();
+                if (!StringUtils.isEmpty(sqlPart)) {
+                    rowCount += statement.executeUpdate(sqlPart);
+                }
+            }
+            connection.commit();
+            FacesContext.getCurrentInstance().
+                    addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "SQL result", "Rows affected: " + rowCount));
+
+        } catch (SQLException e) {
+            FacesContext.getCurrentInstance().
+                    addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "SQLException", e.getMessage()));
+            return;
+        }
+
+    }
+
+    public void runQuery() {
         /*
         DataTable table = (DataTable) FacesContext.getCurrentInstance().getViewRoot().findComponent(":sqlForm:queryTable");
         table.resetColumns();

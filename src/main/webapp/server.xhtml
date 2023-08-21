@@ -67,7 +67,10 @@
                        matchBrackets="true" />
 
         <br/>
-        <p:commandButton value="Execute" action="#{serverBean.executeSql()}" update="sqlForm"
+        <p:commandButton value="Run query" action="#{serverBean.runQuery()}" update="sqlForm"
+                         style="margin: 1vw" styleClass="ui-button-danger"/>
+
+        <p:commandButton value="Execute SQL" action="#{serverBean.executeSql()}" update="sqlForm"
                          style="margin: 1vw" styleClass="ui-button-danger"/>
 
         <div class="ui-datatable-tablewrapper">

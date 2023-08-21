@@ -281,6 +281,7 @@
           <element id="library" level="project" name="Maven: jakarta.inject:jakarta.inject-api:2.0.1" />
           <element id="library" level="project" name="Maven: org.primefaces:primefaces:jakarta:13.0.0" />
           <element id="library" level="project" name="Maven: org.primefaces.extensions:primefaces-extensions:jakarta:13.0.0" />
+          <element id="library" level="project" name="Maven: c3p0:c3p0:0.9.1.2" />
           <element id="library" level="project" name="Maven: org.slf4j:slf4j-log4j12:1.7.26" />
           <element id="library" level="project" name="Maven: log4j:log4j:1.2.17" />
         </element>
