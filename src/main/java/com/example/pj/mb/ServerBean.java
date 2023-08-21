@@ -59,6 +59,9 @@ public class ServerBean implements Serializable {
     @Getter
     private List<Map<String, Object>> sqlResult = new ArrayList<>();
 
+    @Getter
+    private List<String> selectedCols = new ArrayList<>();
+
     // *****************************************************************************************************************
     public boolean hasConnection() {
         return null != dataService.getConnection();
@@ -74,6 +77,7 @@ public class ServerBean implements Serializable {
 
     public void selectTable(final Table table) {
         selectedTable = table;
+        selectedCols.clear();
 
         StringBuffer buffer = new StringBuffer("SELECT * FROM ");
         if (null != selectedSchema && !StringUtils.isEmpty(selectedSchema.getName())) {
@@ -163,13 +167,13 @@ public class ServerBean implements Serializable {
             try (ResultSet resultSet = statement.executeQuery(sql)) {
                 ResultSetMetaData metaData = resultSet.getMetaData();
 
-                List<String> cols = new ArrayList<>();
+                selectedCols.clear();
                 for (int index = 1; index <= metaData.getColumnCount(); index++)
-                    cols.add(metaData.getColumnName(index));
+                    selectedCols.add(metaData.getColumnName(index));
 
                 while (resultSet.next()) {
                     Map<String, Object> row = new HashMap<>();
-                    for (String colName : cols) {
+                    for (String colName : selectedCols) {
                         Object val = resultSet.getObject(colName);
                         row.put(colName, val);
                     }
@@ -182,16 +186,6 @@ public class ServerBean implements Serializable {
             return;
         }
 
-    }
-
-    public List<String> getTableColumns() {
-        if (null == selectedTable)
-            return Collections.EMPTY_LIST;
-
-        return selectedTable.getFields()
-                .stream()
-                .map(TableField::getColumn)
-                .collect(Collectors.toList());
     }
 
 }
